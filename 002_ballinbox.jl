@@ -30,6 +30,7 @@ P(::typeof(🔴|⬜)) = 2/3
 P(::typeof(🔵|⬜)) = 1/3
 P(::typeof(🔴|⬛)) = 1/4
 P(::typeof(🔵|⬛)) = 3/4
+
 P(🔴::ProbabilisticBall) = P(🔴|⬜)*P(⬜) + P(🔴|⬛)*P(⬛) # = P(🔴∩⬜) + P(🔴∩⬛)
 P(s::Sequence) = prod(P.(s.s))
 function P(c::Conditional{<:ProbabilisticBox,Sequence})
@@ -96,3 +97,23 @@ P(🔴)
 P(🔵)
 P(⬜|z)
 P(⬛|z)
+
+
+## 事前分布からの予測
+function predict_sequence(p0, xⁿ)
+    xs = xⁿ.s
+    n = length(xs)
+    ps = zeros(n+1)
+    ps[1] = p0
+    for i in 1:n
+        ps[i+1] = P(xs[i]|⬜)*ps[i]/(P(xs[i]|⬜)*ps[i]+P(xs[i]|⬛)*(1-ps[i]))
+    end
+    
+    return ps
+end
+
+xⁿ = sampling(⬜,50)
+p0s = [(-x^3+3x+2)/4 for x in -1:0.05:1]
+p0s = [(x+1)/2 for x in -1:0.05:1]
+predict_sequences = [predict_sequence(p0, xⁿ) for p0 in p0s]
+plot(predict_sequences, label=false)
