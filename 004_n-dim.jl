@@ -5,7 +5,7 @@ using LinearAlgebra
 using StatsPlots
 using GeometryBasics
 
-N = 10^5
+N = 10^4
 
 μ = [1,2]
 Σ = [1 0.3;0.3 2]
@@ -77,8 +77,7 @@ for S in rand(dist_Σ′,100)
 end
 plot!()
 
-
-covellipse([0,0], inv(Σ), showaxes=true, label="cov2", n_std=2, aspect_ratio=1)
+covellipse([0,0], Λ, showaxes=true, label="cov2", n_std=2, aspect_ratio=1)
 
 
 ## 平均と分散の両方が未知の場合(TODO)

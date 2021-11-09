@@ -11,6 +11,7 @@ N = 10^5
 σ² = 4
 λ = 1/σ²
 xᴺ = μ .+ √σ² * randn(N)
+x_dist = Distributions.Normal(μ, √σ²)
 x_dist = Normal(μ, √σ²)
 histogram(xᴺ, norm=true)
 plot!(x_dist)
@@ -43,9 +44,9 @@ plot!([μ], seriestype="vline")
 θ_λ = 1
 dist_λ =  Gamma(α_λ,θ_λ)
 
-nn = 30
+nn = 100
 plot(dist_λ,0,1)
-for n in 1:nn
+for n in 1:10:nn
     xⁿ = xᴺ[1:n]
     α_λ′ = n/2 + α_λ
     θ_λ′ = 1/(dot(xⁿ.-μ, xⁿ.-μ)/2 + 1/θ_λ)
@@ -62,16 +63,16 @@ plot!([λ], seriestype="vline")
 α_μλ = 1
 θ_μλ = 1
 
-p(μ, λ) = pdf(Normal(μ_μλ, 1/√(β_μλ*λ)), μ) * pdf(Gamma(α_μλ,θ_μλ), λ)+1
+p(μ, λ) = pdf(Normal(μ_μλ, 1/√(β_μλ*λ)), μ) * pdf(Gamma(α_μλ,θ_μλ), λ)
 
 # plot
-x = 1:0.01:5
-y = 0:0.01:2
-contour(x, y, p)
+_μ = 1:0.01:5
+_λ = 0:0.01:2
+contour(_μ, _λ, p)
 
 # 更新
-n = 50
-contour(x, y, p)
+n = 10000
+contour(_μ, _λ, p)
 xⁿ = xᴺ[1:n]
 β_μλ′ = n + β_μλ
 μ_μλ′ = (sum(xⁿ) + β_μλ*μ_μλ)/(n + β_μλ)
@@ -81,7 +82,5 @@ xⁿ = xᴺ[1:n]
 q(μ, λ) = pdf(Normal(μ_μλ′, 1/√(β_μλ′*λ)), μ) * pdf(Gamma(α_μλ′,θ_μλ′), λ)
 
 # plot
-x = 1:0.01:5
-y = 0:0.01:2
-contour(x, y, q)
+contour(_μ, _λ, q)
 scatter!([Point(μ, λ)])

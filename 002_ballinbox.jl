@@ -28,8 +28,8 @@ P(::BoxWhite) = 2/5
 P(::BoxBlack) = 3/5
 P(::typeof(🔴|⬜)) = 2/3
 P(::typeof(🔵|⬜)) = 1/3
-P(::typeof(🔴|⬛)) = 1/4
-P(::typeof(🔵|⬛)) = 3/4
+P(::typeof(🔴|⬛)) = 2/3
+P(::typeof(🔵|⬛)) = 1/3
 
 P(🔴::ProbabilisticBall) = P(🔴|⬜)*P(⬜) + P(🔴|⬛)*P(⬛) # = P(🔴∩⬜) + P(🔴∩⬛)
 P(s::Sequence) = prod(P.(s.s))
@@ -113,7 +113,7 @@ function predict_sequence(p0, xⁿ)
 end
 
 xⁿ = sampling(⬜,50)
-p0s = [(-x^3+3x+2)/4 for x in -1:0.05:1]
+p0s = [(-x^3+3x+2)/4 for x in -1:0.001:1]
 p0s = [(x+1)/2 for x in -1:0.05:1]
 predict_sequences = [predict_sequence(p0, xⁿ) for p0 in p0s]
 plot(predict_sequences, label=false)
